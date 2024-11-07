@@ -22,6 +22,8 @@ import argparse
 import mmap
 import os
 
+
+from time import sleep
 import construct
 from construct import Struct, Int32ul, Int16ul, Int8ul, Int64ul, Array, Union
 from enum import Enum
@@ -463,7 +465,9 @@ class DirInode(Inode):
     def __init__(self, erofs: Erofs, nid: int):
         super(DirInode, self).__init__(erofs, nid)
         if S_IFMT(self.inode_header.i_mode) != S_IFDIR:
-            raise ValueError("DirInode at nid=0x%16x is not of type S_IFDIR, self.inode_header.i_mode=0x%08x" % (nid, self.inode_header.i_mode))
+            print("\n[-] DIR @ %r corrupted!!\n" % hex(self.inode_off))
+            sleep(7)
+            #raise ValueError("DirInode at nid=0x%16x is not of type S_IFDIR, self.inode_header.i_mode=0x%08x" % (nid, self.inode_header.i_mode))
         print("\t\t%r:%r" % (hex(self.inode_off), self.inode_header))
         #print(self.inode_header)
         print("")
@@ -539,7 +543,9 @@ class RegFileInode(Inode):
         super(RegFileInode, self).__init__(erofs, nid)
         print("\t\t %r: %r" % (hex(self.inode_off), self.inode_header))
         if S_IFMT(self.inode_header.i_mode) != S_IFREG:
-            raise ValueError("RegFileInode at nid=0x%16x is not of type S_IFREG, self.inode_header.i_mode=0x%08x" % (nid, self.inode_header.i_mode))
+            print("\n[-] FILE @ %r is corrupt!!" % (hex(self.inode_off)))
+            sleep(7)
+            #raise ValueError("RegFileInode at nid=0x%16x is not of type S_IFREG, self.inode_header.i_mode=0x%08x" % (nid, self.inode_header.i_mode))
 
 
 
